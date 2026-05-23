@@ -82,4 +82,7 @@ else:
         return HTMLResponse("<h1>Chaos Monkey Web App Dashboard</h1><p>Static files directory 'static' not found.</p>")
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    # We disable reload in production environments for stability
+    reload = os.environ.get("ENV") != "production"
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=reload)

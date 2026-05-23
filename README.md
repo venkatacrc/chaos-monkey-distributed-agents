@@ -167,27 +167,27 @@ Gemini Flash models provide the throughput and efficiency required for continuou
 # 🛠️ Features
 
 * **Runtime Payload Interception**
-
   * Capture and mutate live tool responses before the target agent processes them.
 
 * **Dynamic Chaos Injection**
-
   * Generate semantic and structural corruption attacks in real time.
 
 * **Programmatic Shield Guardrails**
-
   * Runtime validation layer for anomaly detection and exploit prevention.
 
 * **Multi-Agent Orchestration**
-
   * Coordinated execution between target, saboteur, and evaluator agents.
 
-* **CLI Monitoring Dashboard**
+* **Interactive Web Dashboard**
+  * High-fidelity dark mode UI featuring neon accent indicators, real-time visual node graph flow (User -> Target -> DB -> Monkey -> Shield -> Action), dynamic progress timeline, and streaming compliance evaluation reports.
 
-  * Rich terminal interface for visualizing mutation flows and execution traces.
+* **CLI Monitoring Dashboard**
+  * Rich terminal dashboard using `rich` for visualizing mutation flows and execution traces.
+
+* **Docker & Container Support**
+  * A lightweight, fully configured container (`Dockerfile`) optimized for secure local running and cloud deployment.
 
 * **Automated Security Reporting**
-
   * Generates resilience assessments and vulnerability summaries after each run.
 
 ---
@@ -197,7 +197,7 @@ Gemini Flash models provide the throughput and efficiency required for continuou
 ## Prerequisites
 
 * Python 3.11+
-* Gemini API key
+* Gemini API key (Get your API key from [Google AI Studio](https://aistudio.google.com/))
 * Recommended: virtual environment or Miniconda
 
 ---
@@ -207,17 +207,18 @@ Gemini Flash models provide the throughput and efficiency required for continuou
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/chaos-monkey-distributed-agents.git
+git clone https://github.com/venkatacrc/chaos-monkey-distributed-agents.git
 cd chaos-monkey-distributed-agents
 ```
 
 ### 2. Install dependencies
 
 ```bash
-python -m pip install google-genai rich
+python -m pip install -r requirements.txt
 ```
 
 ### 3. Configure your API key
+Create a `.env` file in the root directory or export your key directly:
 
 ```bash
 export GEMINI_API_KEY="your-api-key-here"
@@ -227,18 +228,49 @@ export GEMINI_API_KEY="your-api-key-here"
 
 # ▶️ Running the Simulation Suite
 
-Execute the main automation script:
+### 1. Run the Interactive Web Dashboard (FastAPI + Vanilla CSS)
+Start the FastAPI server locally:
+
+```bash
+python app.py
+```
+Open **`http://localhost:8000`** in your browser to access the beautiful interactive dashboard!
+
+### 2. Run the CLI Automation Suite
+Execute the main terminal pipeline to see three automated test scenarios (baseline, chaos active, and shielded runs):
 
 ```bash
 python target_agent.py
 ```
 
-The simulation demonstrates:
+### 3. Run Locally with Docker
+Build and run the containerized application on your local machine:
 
-1. Baseline execution
-2. Active chaos injection attacks
-3. Runtime defense behavior
-4. Automated resilience evaluation
+```bash
+# Build the Docker image
+docker build -t chaos-monkey-agentic .
+
+# Run the container (binds container port 8080 to localhost:8000)
+docker run -p 8000:8080 -e GEMINI_API_KEY="your-api-key-here" chaos-monkey-agentic
+```
+
+---
+
+# 🌐 Production Cloud Deployment
+
+### Secure Deploy to Google Cloud Run (Recommended for Google I/O Hackathon)
+Deploy the containerized application serverlessly and securely in a single command. The API key is kept 100% secure on the server-side environment and is never exposed to clients:
+
+```bash
+gcloud run deploy chaos-monkey-agentic \
+  --source . \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars="GEMINI_API_KEY=your_gemini_api_key,ENV=production" \
+  --project io-hack26mtv-7537
+```
+*(If APIs are disabled on a fresh GCP project, enable them first: `gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com --project io-hack26mtv-7537`)*
 
 ---
 
