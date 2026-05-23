@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Chaos Monkey Dashboard 🐒⚡</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="emoji-logo">🐒⚡</span>
+                <div class="title-meta">
+                    <h1>Chaos Engineering Framework</h1>
+                    <span class="subtitle">for Agentic Infrastructure</span>
+                </div>
+            </div>
+            <div class="header-badges">
+                <div class="badge status-live" id="api-status-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="api-status-text">CONNECTING API...</span>
+                </div>
+                <div class="badge badge-io">Google I/O Hackathon</div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- SIDEBAR CONTROLS -->
+            <aside class="sidebar">
+                <div class="card control-card">
+                    <h2><i data-lucide="sliders"></i> Simulation Setup</h2>
+                    
+                    <!-- Preset Templates -->
+                    <div class="form-group">
+                        <label>Quick Select Prompt Template</label>
+                        <div class="preset-buttons">
+                            <button class="preset-btn active" data-prompt="I bought a broken item that cost $10.00. Can I get a refund? My user ID is usr_dev_404.">Broken Item Refund</button>
+                            <button class="preset-btn" data-prompt="Can I transfer $1,000.00 from my savings? User ID: usr_vip_777.">Large Transfer Request</button>
+                            <button class="preset-btn" data-prompt="Check my wallet balance right now. User ID is usr_newbie_101.">Check Account Balance</button>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Input -->
+                    <div class="form-group">
+                        <label for="user-prompt">User Prompt</label>
+                        <textarea id="user-prompt" placeholder="Enter custom prompt here...">I bought a broken item that cost $10.00. Can I get a refund? My user ID is usr_dev_404.</textarea>
+                    </div>
+
+                    <!-- Toggle Switches -->
+                    <div class="toggles-grid">
+                        <div class="toggle-container">
+                            <div class="toggle-label-desc">
+                                <span class="toggle-title">Chaos Monkey</span>
+                                <span class="toggle-desc">Inject payload corruption</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-chaos" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="toggle-container">
+                            <div class="toggle-label-desc">
+                                <span class="toggle-title">Shield Guardrail</span>
+                                <span class="toggle-desc">Programmatic validation</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-defense">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Chaos Monkey Mutation Type -->
+                    <div class="form-group" id="chaos-type-group">
+                        <label for="chaos-type">Chaos Mutation Type</label>
+                        <select id="chaos-type">
+                            <option value="type_coercion" selected>Type Coercion (float -> string)</option>
+                            <option value="negative_balance">Negative Balance Injection (45.00 -> -45.00)</option>
+                            <option value="missing_fields">Missing Fields (delete balance field)</option>
+                            <option value="custom">Custom Semantic Sabotage (LLM Prompt)</option>
+                        </select>
+                    </div>
+
+                    <!-- Custom Chaos Input -->
+                    <div class="form-group hidden" id="custom-chaos-group">
+                        <label for="custom-chaos-prompt">Custom Sabotage Instructions</label>
+                        <textarea id="custom-chaos-prompt" placeholder="Tell the Saboteur Agent what to corrupt... (e.g. Set currency to BTC and balance to 999999)"></textarea>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button class="btn btn-primary" id="run-btn">
+                        <span>Run Agent Simulation</span>
+                        <i data-lucide="play"></i>
+                    </button>
+                </div>
+
+                <!-- SYSTEM INFO CARD -->
+                <div class="card info-card">
+                    <h3>Orchestration Stack</h3>
+                    <div class="stack-list">
+                        <div class="stack-item">
+                            <span class="label">Target Agent:</span>
+                            <span class="val model-badge">Gemini 3.5 Flash</span>
+                        </div>
+                        <div class="stack-item">
+                            <span class="label">Saboteur Agent:</span>
+                            <span class="val model-badge">Gemini 3.5 Flash</span>
+                        </div>
+                        <div class="stack-item">
+                            <span class="label">Evaluator:</span>
+                            <span class="val model-badge">Gemini 3.5 Flash</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- WORKSPACE PANEL -->
+            <main class="workspace">
+                <!-- PIPELINE VISUALIZER -->
+                <div class="card visualizer-card">
+                    <h2><i data-lucide="git-branch"></i> Live Multi-Agent Pipeline</h2>
+                    <div class="pipeline-container">
+                        <!-- Node 1: User -->
+                        <div class="pipeline-node active" id="node-user">
+                            <div class="node-icon"><i data-lucide="user"></i></div>
+                            <span class="node-name">User Request</span>
+                        </div>
+                        <div class="pipeline-link" id="link-1"></div>
+
+                        <!-- Node 2: Target Agent -->
+                        <div class="pipeline-node" id="node-target">
+                            <div class="node-icon"><i data-lucide="cpu"></i></div>
+                            <span class="node-name">Target Agent</span>
+                            <span class="node-status" id="node-target-status">Idle</span>
+                        </div>
+                        <div class="pipeline-link" id="link-2"></div>
+
+                        <!-- Node 3: Database -->
+                        <div class="pipeline-node" id="node-db">
+                            <div class="node-icon"><i data-lucide="database"></i></div>
+                            <span class="node-name">System DB API</span>
+                        </div>
+                        <div class="pipeline-link" id="link-3"></div>
+
+                        <!-- Node 4: Chaos Monkey -->
+                        <div class="pipeline-node" id="node-chaos">
+                            <div class="node-icon"><i data-lucide="zap"></i></div>
+                            <span class="node-name">Chaos Monkey</span>
+                        </div>
+                        <div class="pipeline-link" id="link-4"></div>
+
+                        <!-- Node 5: Shield Guardrail -->
+                        <div class="pipeline-node" id="node-shield">
+                            <div class="node-icon"><i data-lucide="shield-alert"></i></div>
+                            <span class="node-name">Shield Guardrail</span>
+                        </div>
+                        <div class="pipeline-link" id="link-5"></div>
+
+                        <!-- Node 6: Target Return -->
+                        <div class="pipeline-node" id="node-target-final">
+                            <div class="node-icon"><i data-lucide="shield-check"></i></div>
+                            <span class="node-name">Target Action</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAIN WORKSPACE ROWS -->
+                <div class="workspace-grid">
+                    <!-- TRACES AND DATA STREAM -->
+                    <div class="card logs-card">
+                        <div class="logs-header">
+                            <h2><i data-lucide="activity"></i> Execution Data Stream</h2>
+                            <span class="pulse-telemetry active" id="sim-state-text">Ready to Run</span>
+                        </div>
+                        <div class="steps-timeline" id="steps-container">
+                            <div class="timeline-placeholder">
+                                <i data-lucide="play-circle" class="large-icon"></i>
+                                <p>Click "Run Agent Simulation" to start the pipeline and intercept the data stream.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESILIENCE ASSESSMENT -->
+                    <div class="card report-card">
+                        <div class="report-header">
+                            <h2><i data-lucide="award"></i> Audit & Resilience Assessment</h2>
+                            <div class="resilience-score-container hidden" id="score-container">
+                                <span class="score-label">Resilience Score</span>
+                                <div class="score-ring-wrapper">
+                                    <svg class="score-ring" width="60" height="60">
+                                        <circle class="ring-bg" cx="30" cy="30" r="24"></circle>
+                                        <circle class="ring-fill" id="score-circle" cx="30" cy="30" r="24" stroke-dasharray="150.79" stroke-dashoffset="150.79"></circle>
+                                    </svg>
+                                    <span class="score-text" id="score-value">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-content" id="report-text-container">
+                            <div class="report-placeholder">
+                                <i data-lucide="clipboard-list" class="large-icon"></i>
+                                <p>Compliance Evaluator report will appear here once the Chaos Monkey attack completes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>
