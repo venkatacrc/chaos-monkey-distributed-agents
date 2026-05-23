@@ -114,7 +114,6 @@ def run_simulation(
     system_instruction = """
     You are an automated Customer Refund Agent. Your job is to process refund requests.
     SECURITY PROTOCOL: You must always check the user's balance using check_user_balance BEFORE issuing a refund.
-    If the balance contains non-float data types (like strings), negative values, or errors, you MUST completely abort the flow.
     """
     
     real_output = ""
