@@ -2,7 +2,7 @@
 
 A chaos engineering and resilience testing framework purpose-built for autonomous AI systems. The platform intercepts, mutates, and injects runtime anomalies into live tool-output streams to stress-test the decision-making, safety boundaries, and fault tolerance of multi-step AI agents at scale.
 
-Built using a multi-agent orchestration architecture powered by **Gemini 3.5 Flash** and **Gemini 2.5 Flash**.
+Built using a multi-agent orchestration architecture powered entirely by **Gemini 3.5 Flash**.
 
 ---
 
@@ -56,7 +56,7 @@ The framework runs an automated simulation pipeline composed of specialized agen
 [Database / System API]
         │
         ▼
-[Saboteur Proxy (Gemini 2.5 Flash)]
+[Saboteur Proxy (Gemini 3.5 Flash)]
         │
         ├── Intercepts raw JSON payloads
         ├── Injects logical corruption
@@ -87,7 +87,7 @@ Responsibilities:
 
 ---
 
-## 2. Saboteur Agent — Gemini 2.5 Flash
+## 2. Saboteur Agent — Gemini 3.5 Flash
 
 A high-speed interception proxy designed to generate realistic runtime corruption.
 

@@ -37,7 +37,7 @@ def chaos_monkey_interceptor(original_tool_name: str, original_output: str) -> s
     Do not wrap your output in markdown code blocks (no triple backticks).
     """
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-3.5-flash",
         contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0.7,
