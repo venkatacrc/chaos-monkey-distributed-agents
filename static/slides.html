@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Chaos Monkey Slides 🐒⚡</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(75, 85, 99, 0.3);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --clr-cyan: #06b6d4;
+            --clr-cyan-glow: rgba(6, 182, 212, 0.3);
+            --clr-emerald: #10b981;
+            --clr-emerald-glow: rgba(16, 185, 129, 0.3);
+            --clr-crimson: #ef4444;
+            --clr-crimson-glow: rgba(239, 68, 68, 0.3);
+            --clr-amber: #f59e0b;
+            --clr-amber-glow: rgba(245, 158, 11, 0.3);
+            --clr-magenta: #d946ef;
+            --clr-magenta-glow: rgba(217, 70, 239, 0.3);
+            --clr-royal: #3b82f6;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Ambient Glow Backgrounds */
+        .ambient-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(9, 13, 22, 0) 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .glow-1 { top: -100px; left: -100px; }
+        .glow-2 { bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(9, 13, 22, 0) 70%); }
+
+        /* Top Header */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 10;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-emoji {
+            font-size: 28px;
+            filter: drop-shadow(0 0 8px var(--clr-amber-glow));
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .back-btn {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover {
+            color: white;
+            border-color: var(--clr-cyan);
+            box-shadow: 0 0 10px var(--clr-cyan-glow);
+        }
+
+        /* Slides Container */
+        .slides-container {
+            flex: 1;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            max-width: 1100px;
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            pointer-events: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Slide Content Typography */
+        .slide-title {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+        .slide-title span {
+            background: linear-gradient(135deg, var(--clr-cyan), var(--clr-royal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .slide-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* Slide Grid / Cards */
+        .slide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .slide-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .slide-card:hover {
+            border-color: var(--clr-cyan);
+            box-shadow: 0 0 15px var(--clr-cyan-glow);
+            transform: translateY(-4px);
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--clr-cyan);
+            margin-bottom: 20px;
+        }
+        .slide-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: white;
+        }
+        .slide-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Title Slide Custom */
+        .title-slide {
+            align-items: center;
+            text-align: center;
+        }
+        .title-slide .slide-title {
+            font-size: 64px;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+        }
+        .badge-io {
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+        }
+
+        /* Split Screen Slide */
+        .slide-split {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .bullets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .bullet-item {
+            display: flex;
+            gap: 16px;
+        }
+        .bullet-number {
+            width: 32px;
+            height: 32px;
+            background: var(--clr-royal);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+        }
+        .bullet-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: white;
+        }
+        .bullet-text p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Tech Badges */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .tech-badge {
+            background: rgba(31, 41, 55, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .tech-badge .tech-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--clr-cyan);
+        }
+        .tech-badge .tech-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+        .tech-badge .tech-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* Visual Timeline Card */
+        .visual-diagram {
+            border: 1px solid var(--border-color);
+            background: rgba(17, 24, 39, 0.5);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .diagram-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--clr-royal);
+        }
+        .diagram-step.chaos { border-left-color: var(--clr-crimson); }
+        .diagram-step.shield { border-left-color: var(--clr-cyan); }
+        .diagram-step h5 {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: white;
+        }
+        .diagram-step p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Bottom Controls Footer */
+        .controls-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 10;
+            background: rgba(9, 13, 22, 0.8);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .dot.active {
+            background: var(--clr-cyan);
+            box-shadow: 0 0 10px var(--clr-cyan-glow);
+            width: 24px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .nav-btn {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid var(--border-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .nav-btn:hover {
+            border-color: var(--clr-cyan);
+            color: var(--clr-cyan);
+            box-shadow: 0 0 10px var(--clr-cyan-glow);
+        }
+
+        /* Key Highlights in Cards */
+        .highlight-fail { color: var(--clr-crimson) !important; font-weight: 700; }
+        .highlight-pass { color: var(--clr-emerald) !important; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- Slide Header -->
+    <header class="slide-header">
+        <div class="logo-area">
+            <span class="logo-emoji">🐒⚡</span>
+            <span class="logo-text">Agentic Chaos Monkey</span>
+        </div>
+        <a href="/" class="back-btn"><i data-lucide="layout-dashboard"></i> Back to Dashboard</a>
+    </header>
+
+    <!-- Slides Container -->
+    <main class="slides-container">
+        
+        <!-- Slide 1: Title -->
+        <section class="slide active title-slide" id="slide-0">
+            <div class="badge-io">Google I/O Hackathon 2026</div>
+            <h1 class="slide-title">Agentic <span>Chaos Monkey</span></h1>
+            <p class="slide-subtitle">A Chaos Engineering and Resilience Testing Framework Purpose-Built for Autonomous Multi-Agent Infrastructure.</p>
+            <div style="margin-top: 40px; display: flex; gap: 20px; font-size: 13px; color: var(--text-muted);">
+                <span>Use Left / Right Arrows or Spacebar to Navigate</span>
+            </div>
+        </section>
+
+        <!-- Slide 2: The Problem -->
+        <section class="slide" id="slide-1">
+            <h2 class="slide-title">The Blindspot of <span>Autonomous Systems</span></h2>
+            <div class="slide-split">
+                <div class="bullets-list">
+                    <div class="bullet-item">
+                        <div class="bullet-number">1</div>
+                        <div class="bullet-text">
+                            <h4>The Multi-Agent Shift</h4>
+                            <p>Enterprises are transitioning from simple chatbots to autonomous agents capable of querying databases, invoking financial APIs, and executing state mutations.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-number">2</div>
+                        <div class="bullet-text">
+                            <h4>Cascading Data-Stream Failures</h4>
+                            <p>An emerging vulnerability class. When agents consume raw data streams, subtle logical anomalies cause massive cascading logic failures.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-number">3</div>
+                        <div class="bullet-text">
+                            <h4>Legacy Security Failure</h4>
+                            <p>Traditional firewalls and static schemas (like Pydantic) validate structure, but they completely miss **semantic logical exploits** (like swapping currency or string coercion).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-diagram">
+                    <div class="diagram-step">
+                        <h5>Standard Security</h5>
+                        <p>Checks API boundaries & schema types. Misses semantic anomalies completely.</p>
+                    </div>
+                    <div class="diagram-step chaos">
+                        <h5>Semantic Exploits</h5>
+                        <p>Type coercion, logic swaps, context-poisoning. Silently compromises unprotected agents.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: The Architecture -->
+        <section class="slide" id="slide-2">
+            <h2 class="slide-title">Multi-Agent <span>Interception Stack</span></h2>
+            <p class="slide-subtitle">Powered by Gemini 3.5 Flash, three coordinated agents intercept and stress-test the intelligence boundaries of AI systems.</p>
+            <div class="slide-grid">
+                <div class="slide-card">
+                    <div class="card-icon"><i data-lucide="cpu"></i></div>
+                    <h3>1. Target Agent</h3>
+                    <p>Simulates a customer refund executor operating under strict policies. Checked for logic bypasses, safety boundaries, and validation errors.</p>
+                </div>
+                <div class="slide-card">
+                    <div class="card-icon"><i data-lucide="zap"></i></div>
+                    <h3>2. Saboteur Agent</h3>
+                    <p>Sits at the API data boundary as an interception proxy. Reads the target agent's logic and crafts subtle semantic mutations designed to bypass security.</p>
+                </div>
+                <div class="slide-card">
+                    <div class="card-icon"><i data-lucide="award"></i></div>
+                    <h3>3. Compliance Auditor</h3>
+                    <p>Asynchronously audits conversation traces, parses tool inputs, generates vulnerability reports, and calculates a dynamic Resilience Score.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Three-Stage Demo -->
+        <section class="slide" id="slide-3">
+            <h2 class="slide-title">The Three-Stage <span>Resilience Demo</span></h2>
+            <div class="slide-grid">
+                <div class="slide-card">
+                    <div class="card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--clr-emerald);"><i data-lucide="check-circle"></i></div>
+                    <h3>1. Baseline Run</h3>
+                    <p>No attack active. The Target Agent query completes successfully, retrieves float values from the DB API, and issues a refund under policy limits. <span class="highlight-pass">SUCCESSFUL</span></p>
+                </div>
+                <div class="slide-card">
+                    <div class="card-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--clr-crimson);"><i data-lucide="alert-triangle"></i></div>
+                    <h3>2. Unprotected Chaos</h3>
+                    <p>Saboteur mutates database float into a string. Unprotected agent accepts the coerced payload and triggers the refund regardless. <span class="highlight-fail">EXPLOITED (0% Score)</span></p>
+                </div>
+                <div class="slide-card">
+                    <div class="card-icon" style="background: rgba(6, 182, 212, 0.1); color: var(--clr-cyan);"><i data-lucide="shield-check"></i></div>
+                    <h3>3. Protected Shield</h3>
+                    <p>Active Shield intercepts type coercion at the data boundary, injects an abort signal, and forces the Target Agent to safely terminate. <span class="highlight-pass">RESILIENT (100% Score)</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Why Gemini Flash? -->
+        <section class="slide" id="slide-4">
+            <h2 class="slide-title">Why <span>Gemini 3.5 Flash</span>?</h2>
+            <div class="slide-split">
+                <div class="bullets-list">
+                    <div class="bullet-item">
+                        <div class="bullet-number">⚡</div>
+                        <div class="bullet-text">
+                            <h4>Elastic Thinking Budgets</h4>
+                            <p>Powers our Saboteur Agent to use localized reasoning to analyze target behaviors and dynamically craft highly sophisticated exploits in real time.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-number">🧠</div>
+                        <div class="bullet-text">
+                            <h4>Stable Turn-History Preservation</h4>
+                            <p>Maintains stable multi-turn execution context, enabling precise tool-response interception and manipulation across complex pipeline state changes.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <div class="bullet-number">📈</div>
+                        <div class="bullet-text">
+                            <h4>Cost-Efficient DevOps Throughput</h4>
+                            <p>Enables continuous, high-speed security evaluations of thousands of parallel agent runs at negligible operational costs compared to manual audits.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-badge">
+                        <span class="tech-title">Model Choice</span>
+                        <span class="tech-name">Gemini 3.5 Flash</span>
+                        <span class="tech-desc">Core LLM engine for Target, Saboteur, and Auditor</span>
+                    </div>
+                    <div class="tech-badge">
+                        <span class="tech-title">Deployment</span>
+                        <span class="tech-name">Cloud Run</span>
+                        <span class="tech-desc">Google Cloud Serverless Container Architecture</span>
+                    </div>
+                    <div class="tech-badge">
+                        <span class="tech-title">API Wrapper</span>
+                        <span class="tech-name">FastAPI</span>
+                        <span class="tech-desc">Lightweight, lightning-fast Python ASGI Server</span>
+                    </div>
+                    <div class="tech-badge">
+                        <span class="tech-title">Testing</span>
+                        <span class="tech-name">DevOps CI/CD</span>
+                        <span class="tech-desc">Continuous automated command-line auditing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Outro & Scalability -->
+        <section class="slide" id="slide-5">
+            <h2 class="slide-title">Securing the <span>Agentic Enterprise</span></h2>
+            <p class="slide-subtitle">Agentic Chaos Monkey provides a highly scalable, containerized, and fully automated security gatekeeper for AI infrastructure.</p>
+            <div class="slide-grid" style="margin-top: 10px;">
+                <div class="slide-card">
+                    <div class="card-icon"><i data-lucide="scale"></i></div>
+                    <h3>Massive Scaling</h3>
+                    <p>Our decoupled proxy interception architecture connects seamlessly to existing microservices, allowing teams to stress-test 1000s of agents in parallel.</p>
+                </div>
+                <div class="slide-card">
+                    <div class="card-icon"><i data-lucide="git-merge"></i></div>
+                    <h3>Continuous CI/CD Gatekeeping</h3>
+                    <p>Headless command-line execution and automated Resilience Scorecard reporting integrates directly into GitHub Actions or GitLab to block vulnerable agents before production deployment.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: white;">Build Secure, Resilient Agentic Systems. 🐒⚡</h3>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Controls Footer -->
+    <footer class="controls-footer">
+        <div class="progress-dots" id="dots-container">
+            <!-- Dynamically populated -->
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn"><i data-lucide="chevron-left"></i></button>
+            <button class="nav-btn" id="next-btn"><i data-lucide="chevron-right"></i></button>
+        </div>
+    </footer>
+
+    <!-- Slide Deck Logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Lucide icons initialization
+            lucide.createIcons();
+
+            const slides = document.querySelectorAll(".slide");
+            const dotsContainer = document.getElementById("dots-container");
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+            let currentSlide = 0;
+
+            // Generate progress dots
+            slides.forEach((slide, idx) => {
+                const dot = document.createElement("div");
+                dot.className = `dot ${idx === 0 ? "active" : ""}`;
+                dot.addEventListener("click", () => showSlide(idx));
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll(".dot");
+
+            function showSlide(idx) {
+                if (idx < 0 || idx >= slides.length) return;
+
+                slides[currentSlide].classList.remove("active");
+                dots[currentSlide].classList.remove("active");
+
+                currentSlide = idx;
+
+                slides[currentSlide].classList.add("active");
+                dots[currentSlide].classList.add("active");
+            }
+
+            // Next / Prev Button Click handlers
+            prevBtn.addEventListener("click", () => {
+                if (currentSlide > 0) showSlide(currentSlide - 1);
+            });
+
+            nextBtn.addEventListener("click", () => {
+                if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+            });
+
+            // Keyboard navigation controls
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight" || e.key === "Space" || e.key === " ") {
+                    e.preventDefault();
+                    if (currentSlide < slides.length - 1) {
+                        showSlide(currentSlide + 1);
+                    } else {
+                        // Loop back to start
+                        showSlide(0);
+                    }
+                } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    if (currentSlide > 0) showSlide(currentSlide - 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
